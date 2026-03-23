@@ -129,77 +129,111 @@ Tu privacidad es importante para nosotros. Esta Política de Privacidad explica 
 });
 app.get("/remove-account", (req, res) => {
   res.send(`
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Delete Account Request</title>
+  <meta charset="UTF-8">
+  <title>Eliminar cuenta</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #000000;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
-    .card {
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 12px;
-      width: 300px;
+
+    .container {
+      width: 320px;
       text-align: center;
     }
-    input, button {
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      border: 1px solid #000;
       border-radius: 6px;
-      border: none;
+      margin-bottom: 15px;
+      font-size: 14px;
     }
-    input {
-      background: #334155;
-      color: white;
-    }
+
     button {
-      background: #ef4444;
-      color: white;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #000;
+      background: #000;
+      color: #fff;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 14px;
     }
+
     button:hover {
-      background: #dc2626;
+      background: #333;
+    }
+
+    #mensaje {
+      margin-top: 15px;
+      font-size: 13px;
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h2>Solicitud de eleiminacion de cuenta</h2>
-    <p>Ingresa numero de Whatsapp vinculado</p>
+
+  <div class="container">
+    <h2>Eliminar cuenta</h2>
+
+    <p>Ingresa tu número de WhatsApp</p>
 
     <input type="text" id="phone" placeholder="+573001234567" />
 
-    <button onclick="sendRequest()">Enviar solicitud al Whatsapp</button>
+    <button onclick="enviar()">Eliminar mi cuenta</button>
 
-    <p id="msg"></p>
+    <p id="mensaje"></p>
   </div>
 
   <script>
-    async function sendRequest() {
+    async function enviar() {
       const phone = document.getElementById("phone").value;
+      const mensaje = document.getElementById("mensaje");
 
-      const res = await fetch("/delete-request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ phone })
-      });
+      if (!phone) {
+        mensaje.innerText = "Por favor ingresa tu número.";
+        return;
+      }
 
-      const data = await res.json();
-      document.getElementById("msg").innerText = data.message;
+      try {
+        await fetch("/delete-request", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ phone })
+        });
+
+        mensaje.innerText =
+          "Solicitud enviada. Por favor confirma en WhatsApp para eliminar tu cuenta.";
+      } catch (error) {
+        mensaje.innerText = "Error al enviar la solicitud.";
+      }
     }
   </script>
+
 </body>
 </html>
   `);
