@@ -5,7 +5,7 @@ const PORT = 3000;
 
 // Route that returns HTML
 app.get("/", (req, res) => {
-    res.send(`
+  res.send(`
     <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -127,7 +127,84 @@ Tu privacidad es importante para nosotros. Esta Política de Privacidad explica 
 </html>
   `);
 });
+app.get("/remove-account", (req, res) => {
+  res.send(`
+   <!DOCTYPE html>
+<html>
+<head>
+  <title>Delete Account Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+    input {
+      background: #334155;
+      color: white;
+    }
+    button {
+      background: #ef4444;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Solicitud de eleiminacion de cuenta</h2>
+    <p>Ingresa numero de Whatsapp vinculado</p>
+
+    <input type="text" id="phone" placeholder="+573001234567" />
+
+    <button onclick="sendRequest()">Enviar solicitud al Whatsapp</button>
+
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    async function sendRequest() {
+      const phone = document.getElementById("phone").value;
+
+      const res = await fetch("/delete-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ phone })
+      });
+
+      const data = await res.json();
+      document.getElementById("msg").innerText = data.message;
+    }
+  </script>
+</body>
+</html>
+  `);
+});
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
